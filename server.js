@@ -3,38 +3,41 @@ const app = express();
 
 app.use(express.json());
 
-let sensor = 0;
+// stockage des valeurs
+let sensors = {
+  airHumidity: null,
+  soilHumidity: null,
+  temperature: null,
+  gas: null,
+  light: null
+};
 
 // route test
 app.get("/", (req, res) => {
-  res.json({ message: "API Arduino OK" });
+  res.json({ message: "API capteurs OK" });
 });
 
-// enregistrer valeur capteur
+// recevoir les données des capteurs
 app.get("/sensor", (req, res) => {
-  const value = req.query.value;
+  const { airHumidity, soilHumidity, temperature, gas, light } = req.query;
 
-  if (value === undefined) {
-    return res.status(400).json({
-      error: "aucune valeur envoyée"
-    });
-  }
+  if (airHumidity !== undefined) sensors.airHumidity = airHumidity;
+  if (soilHumidity !== undefined) sensors.soilHumidity = soilHumidity;
+  if (temperature !== undefined) sensors.temperature = temperature;
+  if (gas !== undefined) sensors.gas = gas;
+  if (light !== undefined) sensors.light = light;
 
-  sensor = value;
-
-  console.log("Nouvelle valeur capteur :", sensor);
+  console.log("Nouvelles données :", sensors);
 
   res.json({
-    status: "valeur enregistrée",
-    sensor: sensor
+    status: "données enregistrées",
+    sensors: sensors
   });
 });
 
-// lire la valeur
+// lire toutes les données
 app.get("/data", (req, res) => {
-  res.json({
-    sensor: sensor
-  });
+  res.json(sensors);
 });
 
 const PORT = process.env.PORT || 3000;
