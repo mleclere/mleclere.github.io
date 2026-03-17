@@ -3,7 +3,6 @@ const app = express();
 
 app.use(express.json());
 
-// stockage des valeurs
 let sensors = {
   airHumidity: null,
   soilHumidity: null,
@@ -12,12 +11,10 @@ let sensors = {
   light: null
 };
 
-// route test
 app.get("/", (req, res) => {
   res.json({ message: "API capteurs OK" });
 });
 
-// recevoir les données des capteurs
 app.get("/sensor", (req, res) => {
   const { airHumidity, soilHumidity, temperature, gas, light } = req.query;
 
@@ -35,7 +32,6 @@ app.get("/sensor", (req, res) => {
   });
 });
 
-// lire toutes les données
 app.get("/data", (req, res) => {
   res.json(sensors);
 });
